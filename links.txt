@@ -4,3 +4,5 @@ https://techcommunity.microsoft.com/t5/ai-machine-learning-blog/configuring-azur
 azurerm Terraform provider
 https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs
 
+Learn Azure - github action with OIDC
+https://learn.microsoft.com/en-us/samples/azure-samples/github-terraform-oidc-ci-cd/github-terraform-oidc-ci-cd/
