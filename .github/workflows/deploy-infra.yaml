@@ -140,7 +140,7 @@ jobs:
 
     - name: Publish plan as a status
       if: github.event_name == 'pull_request'
-      uses: guibranco/github-status-action-v2@latest
+      uses: guibranco/github-status-action-v2@v1
       with:
         authToken: ${{ secrets.GITHUB_TOKEN }}
         state: ${{ steps.summary.outputs.summary }}
@@ -227,7 +227,7 @@ jobs:
 
     - name: Publish apply as a status
       if: github.event_name == 'pull_request'
-      uses: guibranco/github-status-action-v2@latest
+      uses: guibranco/github-status-action-v2@v1
       with:
         authToken: ${{ secrets.GITHUB_TOKEN }}
         state: ${{ steps.summary.outputs.summary }}
