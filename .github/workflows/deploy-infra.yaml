@@ -30,7 +30,7 @@ jobs:
         working-directory: ${{ env.tf_actions_working_dir }}
     
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Log in to Azure using OIDC           
       uses: Azure/login@v2
@@ -43,7 +43,7 @@ jobs:
       uses: hashicorp/setup-terraform@v3
     
     - name: Setup TFLint
-      uses: terraform-linters/setup-tflint@v1
+      uses: terraform-linters/setup-tflint@v4
     
     - name: Terraform fmt
       id: fmt
@@ -52,7 +52,7 @@ jobs:
 
     - name: Terraform Init
       id: init
-      run: terraform init -backend-config=backend.tfvars
+      run: terraform init
       env:
         ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
         ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
@@ -91,7 +91,7 @@ jobs:
         DESTROY: ${{ steps.destroy_arg.outputs.val }}
 
     - name: Create the plan summary
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       if: always()
       id: summary
       env:
@@ -133,14 +133,14 @@ jobs:
       run: cat summary.md >> $GITHUB_STEP_SUMMARY
 
     - name: Upload the plan
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: tf-plan
         path: ${{ env.tf_actions_working_dir }}/out.tfplan
 
     - name: Publish plan as a status
       if: github.event_name == 'pull_request'
-      uses: Sibz/github-status-action@v1.1.6
+      uses: guibranco/github-status-action-v2@latest
       with:
         authToken: ${{ secrets.GITHUB_TOKEN }}
         state: ${{ steps.summary.outputs.summary }}
@@ -158,17 +158,17 @@ jobs:
         working-directory: ${{ env.tf_actions_working_dir }}
     
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Log in to Azure using OIDC
-      uses: azure/login@v1
+      uses: azure/login@v2
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
+      uses: hashicorp/setup-terraform@v3
 
     - name: Terraform Init
       id: init
@@ -180,7 +180,7 @@ jobs:
         ARM_USE_OIDC: true
 
     - name: Download the plan
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: tf-plan
         path: ${{ env.tf_actions_working_dir }}
@@ -195,7 +195,7 @@ jobs:
         ARM_USE_OIDC: true
     
     - name: Create the plan summary
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       if: always()
       id: summary
       env:
@@ -227,7 +227,7 @@ jobs:
 
     - name: Publish apply as a status
       if: github.event_name == 'pull_request'
-      uses: Sibz/github-status-action@v1.1.6
+      uses: guibranco/github-status-action-v2@latest
       with:
         authToken: ${{ secrets.GITHUB_TOKEN }}
         state: ${{ steps.summary.outputs.summary }}
