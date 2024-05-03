@@ -8,13 +8,16 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~>3.10.0"
     }
-  }
-#  backend "azurerm" {
-#    resource_group_name  = "rg-terraform-shared"
-#    storage_account_name = "jcterraformoidc74"
-#    container_name       = "tfstate"
-#    key                  = "dev.terraformoidc.tfstate"
-#  }
+
+    random = {
+      source = "hashicorp/random"
+      version = "3.6.1"
+    }
+
+    tls = {
+      source = "hashicorp/tls"
+      version = "4.0.5"
+    }
 }
 
 provider "azurerm" {
