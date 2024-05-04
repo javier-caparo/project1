@@ -1,2 +1,5 @@
-# project1
-Using OIDC with Terraform in GitHub Actions to authenticate in Azure , and create a CI/CD pipeline in an enviroment
+[![Infra deploy](https://github.com/javiercaparo/azure-project-1/actions/workflows/deploy-infra.yaml/badge.svg?branch=main)](https://github.com/javiercaparo/azure-project-1/actions/workflows/deploy-infra.yaml)
+
+# Project # 1
+
+How to provision Azure infrastructure using Terraform and GitHub Actions using OIDC authentication Azure , and  a CI/CD pipeline  with some security features to deploy a linux VM server in Azure subscription.
