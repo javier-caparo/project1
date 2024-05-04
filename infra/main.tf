@@ -33,18 +33,32 @@ resource "azurerm_network_security_group" "my_terraform_nsg" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  security_rule {
-    name                       = "SSH"
-    priority                   = 1001
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "22"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
+#  security_rule {
+#    name                       = "SSH"
+#    priority                   = 1001
+#    direction                  = "Inbound"
+#    access                     = "Allow"
+#    protocol                   = "Tcp"
+#    source_port_range          = "*"
+#    destination_port_range     = "22"
+#    source_address_prefix      = "*"
+#    destination_address_prefix = "*"
+#  }
 }
+
+resource "azurerm_network_security_rule" "my_terraform_nsr" {
+  name                        = "SSH"
+  priority                    = 1001
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "TCP"
+  source_address_prefix       = "*" / "0.0.0.0" / "<nw>/0" / "/0" / "internet" / "any"
+  destination_port_range      = "22"
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.rg.name
+  network_security_group_name = azurerm_network_security_group.my_terraform_nsg.name
+}
+
 
 # Create network interface
 resource "azurerm_network_interface" "my_terraform_nic" {
@@ -66,6 +80,11 @@ resource "azurerm_network_interface_security_group_association" "example" {
   network_security_group_id = azurerm_network_security_group.my_terraform_nsg.id
 }
 
+resource "azurerm_subnet_network_security_group_association" "example" {
+  subnet_id                 = azurerm_subnet.my_terraform_subnet.id
+  network_security_group_id = azurerm_network_security_group.my_terraform_nsg.id
+}
+
 # Generate random text for a unique storage account name
 resource "random_id" "random_id" {
   keepers = {
@@ -82,7 +101,23 @@ resource "azurerm_storage_account" "my_storage_account" {
   location                 = azurerm_resource_group.rg.location
   resource_group_name      = azurerm_resource_group.rg.name
   account_tier             = "Standard"
-  account_replication_type = "LRS"
+  account_replication_type = "GRS"
+  public_network_access_enabled = false
+  allow_nested_items_to_be_public = false
+
+  shared_access_key_enabled = false
+
+  sas_policy {
+    expiration_period = "90.00:00:00"
+    expiration_action = "Log"
+  }
+
+  blob_properties {
+    delete_retention_policy {
+      days = 7
+    }
+  }
+  
 }
 
 # Create (and display) an SSH key

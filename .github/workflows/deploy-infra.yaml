@@ -129,6 +129,11 @@ jobs:
 
           </details>
 
+          <details><summary>Show Checkov Results</summary>
+
+          ${process.env.CHECKOV_RESULTS}
+
+
           #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
           
           <details><summary>Show Plan</summary>
