@@ -51,7 +51,7 @@ resource "azurerm_network_security_rule" "good_example" {
   priority                    = 1001
   direction                   = "Inbound"
   access                      = "Allow"
-  protocol                    = "TCP"
+  protocol                    = "Tcp"
   source_port_range           = "*"
   destination_port_range      = "22"
   source_address_prefix       = "190.237.60.44"
