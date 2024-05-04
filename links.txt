@@ -6,3 +6,8 @@ https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs
 
 Learn Azure - github action with OIDC
 https://learn.microsoft.com/en-us/samples/azure-samples/github-terraform-oidc-ci-cd/github-terraform-oidc-ci-cd/
+
+github actions
+https://docs.github.com/en/actions/quickstart
+https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/adding-a-workflow-status-badge
+
