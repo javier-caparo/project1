@@ -53,7 +53,7 @@ resource "azurerm_network_security_rule" "good_example" {
   access                      = "Allow"
   protocol                    = "TCP"
   source_port_range           = "*"
-  destination_port_range      = ["22"]
+  destination_port_range      = "22"
   source_address_prefix       = "190.237.60.44"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.rg.name
@@ -98,19 +98,18 @@ resource "random_id" "random_id" {
 
 # Create storage account for boot diagnostics
 resource "azurerm_storage_account" "my_storage_account" {
-  name                     = "diag${random_id.random_id.hex}"
-  location                 = azurerm_resource_group.rg.location
-  resource_group_name      = azurerm_resource_group.rg.name
-  account_tier             = "Standard"
-  account_replication_type = "GRS"
-  public_network_access_enabled = false
-  allow_nested_items_to_be_public = false
+  name                      = "diag${random_id.random_id.hex}"
+  location                  = azurerm_resource_group.rg.location
+  resource_group_name       = azurerm_resource_group.rg.name
+  account_tier              = "Standard"
+  account_replication_type  = "GRS"
+  is_hns_enabled            = true
+  enable_https_traffic_only = true
+  min_tls_version           = "TLS1_2"
 
-  shared_access_key_enabled = false
-
-  sas_policy {
-    expiration_period = "90.00:00:00"
-    expiration_action = "Log"
+  network_rules {
+    default_action = "Deny"
+    ip_rules       = ["190.237.60.44"]
   }
 
   blob_properties {
@@ -120,6 +119,26 @@ resource "azurerm_storage_account" "my_storage_account" {
   }
   
 }
+
+resource "azurerm_private_endpoint" "private_endpoint_blob" {
+  name                = "pe-blob-project1"
+  location            = var.resource_group_location
+  resource_group_name = var.resource_group_name
+  subnet_id           = azurerm_subnet.my_terraform_subnet.id
+
+  private_service_connection {
+    name                           = "psc-blob-project1"
+    is_manual_connection           = false
+    private_connection_resource_id = azurerm_storage_account.my_storage_account.id
+    subresource_names              = ["blob"]
+  }
+
+  # Should be deployed by Azure policy
+  lifecycle {
+    ignore_changes = [private_dns_zone_group]
+  }
+}
+
 
 # Create (and display) an SSH key
 resource "tls_private_key" "example_ssh" {
