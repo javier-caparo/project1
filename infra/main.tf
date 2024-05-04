@@ -46,14 +46,15 @@ resource "azurerm_network_security_group" "my_terraform_nsg" {
 #  }
 }
 
-resource "azurerm_network_security_rule" "my_terraform_nsr" {
+resource "azurerm_network_security_rule" "good_example" {
   name                        = "SSH"
   priority                    = 1001
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "TCP"
-  source_address_prefix       = "*" / "0.0.0.0" / "<nw>/0" / "/0" / "internet" / "any"
-  destination_port_range      = "22"
+  source_port_range           = "*"
+  destination_port_range      = ["22"]
+  source_address_prefix       = "190.237.60.44"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.rg.name
   network_security_group_name = azurerm_network_security_group.my_terraform_nsg.name
